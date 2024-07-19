@@ -20,6 +20,7 @@
     "fs": "^0.0.1-security",
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.1",
-    "puppeteer": "^22.13.0"
+    "node-cron": "^3.0.3",
+    "puppeteer": "^22.13.1"
   }
 }
