@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-
+const puppeteer = require('puppeteer');
 const app = express();
 const port = 5000;
 
@@ -138,7 +138,34 @@ app.delete('/api/tasks', async (req, res) => {
     res.status(500).send(error);
   }
 });
+app.post('/api/scroll', async (req, res) => {
+  const { url, seconds } = req.body;
+  try {
+    // const browser = await puppeteer.launch({headless: false});
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(url, { waitUntil: 'networkidle2' });
+ 
 
+    const totalScrollSteps = seconds * 10; // 10 steps per second
+    const pageHeight = await page.evaluate(() => document.body.scrollHeight);
+    const scrollStep = Math.ceil(pageHeight / totalScrollSteps);
+
+    await page.evaluate(async (scrollStep, totalScrollSteps) => {
+      for (let i = 0; i < totalScrollSteps; i++) {
+        window.scrollBy(0, scrollStep);
+        await new Promise(resolve => setTimeout(resolve, 100)); // 100 ms delay per step
+      }
+    }, scrollStep, totalScrollSteps);
+
+    await browser.close();
+
+    res.status(200).send({ success: true });
+  } catch (error) {
+    console.error('Error processing scroll command:', error);
+    res.status(500).send({ success: false, message: 'Error occurred while processing the request.' });
+  }
+});
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });

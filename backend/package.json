@@ -21,6 +21,6 @@
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.1",
     "node-cron": "^3.0.3",
-    "puppeteer": "^22.13.1"
+    "puppeteer": "^22.14.0"
   }
 }
